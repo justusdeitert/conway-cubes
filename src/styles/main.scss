@@ -1,0 +1,237 @@
+// ============================================
+// Conway's Game of Life - Modern Dark Theme
+// Only styles that can't be done with UnoCSS
+// ============================================
+
+@use 'sass:color';
+
+// --------------------------------------------
+// Variables
+// --------------------------------------------
+$cell-size: 18px;
+$cell-gap: 2px;
+$accent: #10b981;
+$accent-glow: rgba(16, 185, 129, 0.5);
+$accent-bright: #34d399;
+$surface: #0a0a0b;
+$surface-elevated: #18181b;
+$border: #27272a;
+
+// --------------------------------------------
+// Animations
+// --------------------------------------------
+@keyframes spin {
+    from {
+        transform: rotateX(55deg) rotateZ(0deg);
+    }
+    to {
+        transform: rotateX(55deg) rotateZ(360deg);
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 15px $accent-glow, inset 0 0 10px rgba(16, 185, 129, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 25px $accent-glow, 0 0 40px rgba(16, 185, 129, 0.2), inset 0 0 15px rgba(16, 185, 129, 0.15);
+    }
+}
+
+// --------------------------------------------
+// Dynamic glow text
+// --------------------------------------------
+.dynamic {
+    color: $accent;
+    text-shadow: 0 0 20px $accent-glow;
+}
+
+// --------------------------------------------
+// Grid & Cells (3D transform styles)
+// --------------------------------------------
+.grid {
+    position: relative;
+    z-index: 2;
+    margin: 0 auto;
+    transform-style: preserve-3d;
+    transform: rotateX(55deg);
+    animation: spin 40s linear infinite;
+}
+
+.cell {
+    float: left;
+    width: $cell-size;
+    height: $cell-size;
+    margin: $cell-gap;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.alive {
+        background: linear-gradient(135deg, $accent-bright, $accent);
+        border-color: $accent;
+        box-shadow: 0 0 15px $accent-glow, inset 0 0 10px rgba(16, 185, 129, 0.2);
+        transform: translateZ(25px);
+        animation: pulse-glow 2s ease-in-out infinite;
+
+        &:hover {
+            background: linear-gradient(135deg, color.scale($accent-bright, $lightness: 20%), $accent-bright);
+            box-shadow: 0 0 25px $accent-glow, 0 0 40px rgba(16, 185, 129, 0.3);
+        }
+    }
+
+    &.dead:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.1);
+        transform: translateZ(5px);
+    }
+}
+
+// --------------------------------------------
+// Modern Slider Input Styling
+// --------------------------------------------
+.slider-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    height: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    // Webkit Track
+    &::-webkit-slider-runnable-track {
+        height: 6px;
+        background: transparent;
+        border-radius: 999px;
+    }
+
+    // Firefox Track
+    &::-moz-range-track {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+    }
+
+    // Webkit Thumb
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 14px;
+        height: 14px;
+        margin-top: -4px;
+        background: linear-gradient(135deg, $accent-bright, $accent);
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 0 8px $accent-glow;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 12px $accent-glow;
+        }
+    }
+
+    // Firefox Thumb
+    &::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        background: linear-gradient(135deg, $accent-bright, $accent);
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 0 8px $accent-glow;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    &:focus {
+        outline: none;
+        
+        &::-webkit-slider-thumb {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), 0 0 10px $accent-glow;
+        }
+    }
+
+    &[disabled] {
+        opacity: 0.3;
+        cursor: not-allowed;
+
+        &::-webkit-slider-thumb {
+            background: #52525b;
+            box-shadow: none;
+        }
+    }
+}
+
+// Slider pill disabled state
+.slider-pill:has(input[disabled]) {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+// --------------------------------------------
+// Button States (Play/Pause toggle)
+// --------------------------------------------
+#btn-start .pause,
+#btn-start .play {
+    display: none;
+}
+
+.running #btn-start .pause {
+    display: flex;
+}
+
+.stopped #btn-start .play,
+.paused #btn-start .play {
+    display: flex;
+}
+
+// Button pressed state
+button.down:not([disabled]) {
+    transform: scale(0.90) !important;
+}
+
+// Active state glow for running
+.running #btn-start {
+    background: rgba(16, 185, 129, 0.25);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+// --------------------------------------------
+// Tooltip on hover for action buttons
+// --------------------------------------------
+.action-btn {
+    position: relative;
+    
+    &::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-4px);
+        padding: 6px 10px;
+        background: rgba(0, 0, 0, 0.9);
+        color: #fff;
+        font-size: 11px;
+        font-family: 'Inter', sans-serif;
+        white-space: nowrap;
+        border-radius: 6px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        pointer-events: none;
+        z-index: 100;
+    }
+    
+    &:hover::after {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(-8px);
+    }
+}

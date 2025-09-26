@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <title>Conway's Game Of Life - 3D</title>
+    </head>
+    <body class="m-0 min-h-screen bg-[#0a0a0b] font-orbitron text-sm text-text-secondary overflow-hidden">
+        <!-- Header -->
+        <header class="glass-panel absolute top-0 left-0 right-0 px-6 py-5 z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-accent shadow-[0_0_10px_rgba(16,185,129,0.8)] animate-pulse"></div>
+                <h1 class="text-xl md:text-2xl font-bold tracking-wider text-text-primary m-0 uppercase">
+                    Conway's Game Of Life
+                </h1>
+            </div>
+        </header>
+
+        <div id="viewport" class="relative z-2 -mt-12" style="perspective: 800px;"></div>
+
+        <!-- Cycle Counter -->
+        <div id="cyclecount" class="dynamic absolute bottom-[160px] left-0 right-0 z-100 text-5xl md:text-6xl text-center font-bold tracking-widest"></div>
+
+        <!-- Controls Panel -->
+        <footer id="controls" class="absolute bottom-0 left-0 right-0 px-6 py-5 z-10">
+            <div class="flex items-end justify-between">
+                <!-- Parameters - Stacked on Left -->
+                <div class="flex flex-col gap-2">
+                    <div class="slider-pill" title="Grid Size">
+                        <span class="i-ph-grid-four-fill text-base text-text-muted"></span>
+                        <input
+                            id="param-gridsize"
+                            class="slider-input"
+                            type="range"
+                            value="16"
+                            min="8"
+                            max="36"
+                            step="4"
+                            data-action="gridsize"
+                        />
+                        <div class="slider-value">16×16</div>
+                    </div>
+
+                    <div class="slider-pill" title="Initial Density">
+                        <span class="i-ph-dots-six-fill text-base text-text-muted"></span>
+                        <input
+                            id="param-density"
+                            class="slider-input"
+                            type="range"
+                            value="30"
+                            min="5"
+                            max="50"
+                            step="5"
+                            data-action="density"
+                        />
+                        <div class="slider-value">30%</div>
+                    </div>
+
+                    <div class="slider-pill" title="Simulation Speed">
+                        <span class="i-ph-timer-fill text-base text-text-muted"></span>
+                        <input
+                            id="param-freq"
+                            class="slider-input"
+                            type="range"
+                            value="1"
+                            min="1"
+                            max="4"
+                            step="1"
+                            data-action="freq"
+                        />
+                        <div class="slider-value">1 Hz</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons - Modern Floating Pill -->
+                <div class="action-pill">
+                    <button
+                        id="btn-start"
+                        class="action-btn action-btn-primary two-state"
+                        data-keycode="32"
+                        data-action="start"
+                        title="Play/Pause (Space)"
+                    >
+                        <span class="play i-ph-play-fill text-lg"></span>
+                        <span class="pause i-ph-pause-fill text-lg"></span>
+                    </button>
+
+                    <button 
+                        id="btn-step" 
+                        class="action-btn" 
+                        data-keycode="13" 
+                        data-action="step"
+                        title="Step (Return)"
+                    >
+                        <span class="i-ph-skip-forward-fill text-lg"></span>
+                    </button>
+
+                    <div class="action-divider"></div>
+
+                    <button 
+                        id="btn-stop" 
+                        class="action-btn" 
+                        disabled 
+                        data-keycode="27" 
+                        data-action="stop"
+                        title="Reset (Esc)"
+                    >
+                        <span class="i-ph-arrow-counter-clockwise-bold text-lg"></span>
+                    </button>
+                </div>
+            </div>
+        </footer>
+
+        <script type="module" src="/src/main.js"></script>
+    </body>
+</html>
