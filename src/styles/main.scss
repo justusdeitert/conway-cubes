@@ -29,21 +29,14 @@ $border: #27272a;
     }
 }
 
-@keyframes pulse-glow {
-    0%, 100% {
-        box-shadow: 0 0 15px $accent-glow, inset 0 0 10px rgba(16, 185, 129, 0.1);
-    }
-    50% {
-        box-shadow: 0 0 25px $accent-glow, 0 0 40px rgba(16, 185, 129, 0.2), inset 0 0 15px rgba(16, 185, 129, 0.15);
-    }
-}
+// Removed pulse-glow animation for performance
 
 // --------------------------------------------
 // Dynamic glow text
 // --------------------------------------------
 .dynamic {
     color: $accent;
-    text-shadow: 0 0 20px $accent-glow;
+    // text-shadow removed for performance
 }
 
 // --------------------------------------------
@@ -56,6 +49,9 @@ $border: #27272a;
     transform-style: preserve-3d;
     transform: rotateX(55deg);
     animation: spin 40s linear infinite;
+    // GPU acceleration hint
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .cell {
@@ -66,19 +62,17 @@ $border: #27272a;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 3px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    // Use will-change for GPU acceleration and only transition specific properties
+    will-change: transform, background-color, border-color;
+    transition: transform 0.15s ease-out, background-color 0.15s ease-out, border-color 0.15s ease-out;
 
     &.alive {
-        background: linear-gradient(135deg, $accent-bright, $accent);
-        border-color: $accent;
-        box-shadow: 0 0 15px $accent-glow, inset 0 0 10px rgba(16, 185, 129, 0.2);
-        transform: translateZ(25px);
-        animation: pulse-glow 2s ease-in-out infinite;
-
-        &:hover {
-            background: linear-gradient(135deg, color.scale($accent-bright, $lightness: 20%), $accent-bright);
-            box-shadow: 0 0 25px $accent-glow, 0 0 40px rgba(16, 185, 129, 0.3);
-        }
+        background: $accent;
+        border-color: $accent-bright;
+        // Simplified: single subtle shadow instead of multiple glows
+        box-shadow: 0 0 8px $accent-glow;
+        transform: translateZ(20px);
+        // Removed pulse-glow animation for performance
     }
 
     &.dead:hover {
