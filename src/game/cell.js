@@ -3,6 +3,54 @@
  */
 
 /**
+ * Rule sets for cellular automata
+ * Format: { birth: [neighbor counts for birth], survive: [neighbor counts for survival] }
+ */
+export const RULE_SETS = {
+    conway: {
+        name: "Conway's Life",
+        description: 'B3/S23 - The classic Game of Life',
+        birth: [3],
+        survive: [2, 3],
+    },
+    highlife: {
+        name: 'HighLife',
+        description: 'B36/S23 - Creates replicator patterns',
+        birth: [3, 6],
+        survive: [2, 3],
+    },
+    daynight: {
+        name: 'Day & Night',
+        description: 'B3678/S34678 - Symmetric, chaotic patterns',
+        birth: [3, 6, 7, 8],
+        survive: [3, 4, 6, 7, 8],
+    },
+    seeds: {
+        name: 'Seeds',
+        description: 'B2/S - Explosive growth, cells die immediately',
+        birth: [2],
+        survive: [],
+    },
+};
+
+// Current active rule set
+let currentRule = 'conway';
+
+/**
+ * Sets the current rule set
+ */
+export const setRule = (ruleKey) => {
+    if (RULE_SETS[ruleKey]) {
+        currentRule = ruleKey;
+    }
+};
+
+/**
+ * Gets the current rule set key
+ */
+export const getRule = () => currentRule;
+
+/**
  * Creates a cell state object
  */
 export const createCell = (x, y, alive = false) => ({
@@ -21,18 +69,19 @@ export const countAliveNeighbors = (cell) =>
     cell.neighbors.reduce((count, neighbor) => count + (neighbor.alive ? 1 : 0), 0);
 
 /**
- * Determines if a cell should die based on Game of Life rules
+ * Determines if a cell should die based on current rule set
  */
 export const shouldDie = (cell) => {
     const aliveNeighbors = countAliveNeighbors(cell);
+    const rules = RULE_SETS[currentRule];
 
-    // Alive cell survives with 2 or 3 neighbors
-    if (cell.alive && (aliveNeighbors === 2 || aliveNeighbors === 3)) {
+    // Alive cell survives if neighbor count is in survive array
+    if (cell.alive && rules.survive.includes(aliveNeighbors)) {
         return false;
     }
 
-    // Dead cell becomes alive with exactly 3 neighbors
-    if (!cell.alive && aliveNeighbors === 3) {
+    // Dead cell becomes alive if neighbor count is in birth array
+    if (!cell.alive && rules.birth.includes(aliveNeighbors)) {
         return false;
     }
 

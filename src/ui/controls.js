@@ -10,6 +10,7 @@ import {
     setGridSize,
     setGridDensity,
     setGridDelay,
+    setGridRule,
 } from '../game/grid.js';
 
 /**
@@ -86,6 +87,11 @@ const createCallbacks = (grid) => ({
         const meter = $('#param-freq').parentNode.querySelector('.slider-value');
         meter.textContent = `${value} Hz`;
     },
+
+    ruleset: (value) => {
+        setGridRule(grid, value);
+        initGrid(grid);
+    },
 });
 
 /**
@@ -139,7 +145,7 @@ const bindActions = (callbacks) => {
             el.addEventListener('click', () => {
                 if (callbacks[action]) callbacks[action]();
             });
-        } else if (tagName === 'input') {
+        } else if (tagName === 'input' || tagName === 'select') {
             el.addEventListener('change', (event) => {
                 if (callbacks[action]) callbacks[action](event.target.value);
             });

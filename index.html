@@ -14,11 +14,26 @@
     <body class="m-0 min-h-screen bg-[#0a0a0b] font-orbitron text-sm text-text-secondary overflow-hidden">
         <!-- Header -->
         <header class="glass-panel absolute top-0 left-0 right-0 px-6 py-5 z-10">
-            <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-accent shadow-[0_0_10px_rgba(16,185,129,0.8)] animate-pulse"></div>
-                <h1 class="text-xl md:text-2xl font-bold tracking-wider text-text-primary m-0 uppercase">
-                    Conway's Game Of Life
-                </h1>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-accent shadow-[0_0_10px_rgba(16,185,129,0.8)] animate-pulse"></div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wider text-text-primary m-0 uppercase">
+                        Conway's Game Of Life
+                    </h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <label for="param-ruleset" class="text-xs text-text-muted uppercase tracking-wider hidden md:block">Rules</label>
+                    <select
+                        id="param-ruleset"
+                        class="bg-[#1a1a1d] border border-[#2a2a2d] rounded-lg px-3 py-2 text-sm text-text-primary cursor-pointer hover:border-accent/50 focus:border-accent focus:outline-none transition-colors"
+                        data-action="ruleset"
+                    >
+                        <option value="conway">Conway's Life (B3/S23)</option>
+                        <option value="highlife">HighLife (B36/S23)</option>
+                        <option value="daynight">Day & Night (B3678/S34678)</option>
+                        <option value="seeds">Seeds (B2/S)</option>
+                    </select>
+                </div>
             </div>
         </header>
 
@@ -38,13 +53,13 @@
                             id="param-gridsize"
                             class="slider-input"
                             type="range"
-                            value="16"
+                            value="20"
                             min="8"
                             max="28"
                             step="4"
                             data-action="gridsize"
                         />
-                        <div class="slider-value">16×16</div>
+                        <div class="slider-value">20×20</div>
                     </div>
 
                     <div class="slider-pill" title="Initial Density">
@@ -68,13 +83,13 @@
                             id="param-freq"
                             class="slider-input"
                             type="range"
-                            value="1"
+                            value="2"
                             min="1"
                             max="4"
                             step="1"
                             data-action="freq"
                         />
-                        <div class="slider-value">1 Hz</div>
+                        <div class="slider-value">2 Hz</div>
                     </div>
                 </div>
 

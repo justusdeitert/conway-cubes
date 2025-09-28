@@ -9,12 +9,20 @@ import {
     tickCell,
     renderCell,
     unrenderCell,
+    setRule,
 } from './cell.js';
+
+/**
+ * Sets the rule set for the simulation
+ */
+export const setGridRule = (grid, ruleKey) => {
+    setRule(ruleKey);
+};
 
 /**
  * Creates a grid state object
  */
-export const createGrid = (size = 16, density = 0.1, delay = 1000) => ({
+export const createGrid = (size = 20, density = 0.1, delay = 500) => ({
     size,
     density,
     delay,
