@@ -10,19 +10,19 @@ A 3D implementation of Conway's Game of Life — built with vanilla JS & CSS.
 
 ```bash
 # Install dependencies
-npm install
+yarn
 
 # Start dev server
-npm run dev
+yarn dev
 ```
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
+| `yarn dev` | Start development server |
+| `yarn build` | Build for production |
+| `yarn preview` | Preview production build |
 
 ## Tech Stack
 
