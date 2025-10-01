@@ -130,25 +130,24 @@ export const seedGrid = (grid) => {
  * Builds neighbor cache for all cells (wrapping at edges)
  */
 export const buildNeighborCache = (grid) => {
-    const maxIndex = grid.size * grid.size - 1;
+    const size = grid.size;
 
     grid.cells.forEach((cell, i) => {
-        const neighborOffsets = [
-            -1,
-            1,
-            -1 - grid.size,
-            -grid.size,
-            1 - grid.size,
-            -1 + grid.size,
-            grid.size,
-            1 + grid.size,
+        const row = Math.floor(i / size);
+        const col = i % size;
+
+        // 8 neighbor directions: [rowOffset, colOffset]
+        const directions = [
+            [-1, -1], [-1, 0], [-1, 1],
+            [0, -1],          [0, 1],
+            [1, -1],  [1, 0],  [1, 1],
         ];
 
-        cell.neighbors = neighborOffsets.map((offset) => {
-            let ni = i + offset;
-            if (ni < 0) ni += maxIndex + 1;
-            else if (ni > maxIndex) ni -= maxIndex + 1;
-            return grid.cells[ni];
+        cell.neighbors = directions.map(([dr, dc]) => {
+            // Wrap around edges (toroidal grid)
+            const nr = (row + dr + size) % size;
+            const nc = (col + dc + size) % size;
+            return grid.cells[nr * size + nc];
         });
     });
 };

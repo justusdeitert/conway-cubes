@@ -19,24 +19,6 @@ export const RULE_SETS = {
         birth: [3, 6],
         survive: [2, 3],
     },
-    daynight: {
-        name: 'Day & Night',
-        description: 'B3678/S34678 - Symmetric, chaotic patterns',
-        birth: [3, 6, 7, 8],
-        survive: [3, 4, 6, 7, 8],
-    },
-    seeds: {
-        name: 'Seeds',
-        description: 'B2/S - Explosive growth, cells die immediately',
-        birth: [2],
-        survive: [],
-    },
-    diamoeba: {
-        name: 'Diamoeba',
-        description: 'B35678/S5678 - Diamond-shaped crystalline forms',
-        birth: [3, 5, 6, 7, 8],
-        survive: [5, 6, 7, 8],
-    },
     twobytwo: {
         name: '2x2',
         description: 'B36/S125 - Blocky 2x2 structures',
@@ -49,11 +31,17 @@ export const RULE_SETS = {
         birth: [3],
         survive: [1, 2, 3, 4, 5],
     },
-    coral: {
-        name: 'Coral',
-        description: 'B3/S45678 - Organic coral-like growth',
-        birth: [3],
-        survive: [4, 5, 6, 7, 8],
+    serviettes: {
+        name: 'Serviettes',
+        description: 'B234/S - Persian rug / flowery fractal patterns',
+        birth: [2, 3, 4],
+        survive: [],
+    },
+    replicator: {
+        name: 'Replicator',
+        description: 'B1357/S1357 - Kaleidoscope self-replicating symmetry',
+        birth: [1, 3, 5, 7],
+        survive: [1, 3, 5, 7],
     },
 };
 
