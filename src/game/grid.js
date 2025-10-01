@@ -10,7 +10,86 @@ import {
     renderCell,
     unrenderCell,
     setRule,
+    toggleCell,
+    activateCell,
 } from './cell.js';
+
+// Drawing state
+let isDrawing = false;
+let lastActivatedCell = null;
+
+/**
+ * Gets cell at mouse position - tries exact hit first, then finds nearest cell
+ */
+const getCellAtPosition = (grid, e) => {
+    // First try: exact hit using elementsFromPoint (handles 3D transforms)
+    const elements = document.elementsFromPoint(e.clientX, e.clientY);
+    
+    for (const el of elements) {
+        if (el.classList.contains('cell')) {
+            return grid.cells.find(cell => cell.node === el) || null;
+        }
+    }
+    
+    // Second try: find nearest cell (for gaps)
+    let nearestCell = null;
+    let nearestDist = Infinity;
+    
+    for (const cell of grid.cells) {
+        if (!cell.node) continue;
+        const rect = cell.node.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+        
+        // Only consider cells within reasonable distance (half cell size + gap)
+        if (dist < nearestDist && dist < rect.width) {
+            nearestDist = dist;
+            nearestCell = cell;
+        }
+    }
+    
+    return nearestCell;
+};
+
+/**
+ * Sets up grid-level mouse event handlers for drawing
+ */
+const setupGridDrawing = (grid) => {
+    // Mousedown: start drawing and activate cell
+    grid.node.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        isDrawing = true;
+        const cell = getCellAtPosition(grid, e);
+        if (cell) {
+            toggleCell(cell);
+            renderCell(cell, grid.node);
+            lastActivatedCell = cell;
+        }
+    });
+    
+    // Mousemove: continue drawing while held
+    grid.node.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        const cell = getCellAtPosition(grid, e);
+        if (cell && cell !== lastActivatedCell) {
+            activateCell(cell);
+            renderCell(cell, grid.node);
+            lastActivatedCell = cell;
+        }
+    });
+    
+    // Mouseup: stop drawing
+    window.addEventListener('mouseup', () => {
+        isDrawing = false;
+        lastActivatedCell = null;
+    });
+    
+    // Mouseleave: stop drawing when leaving grid
+    grid.node.addEventListener('mouseleave', () => {
+        lastActivatedCell = null;
+    });
+};
 
 /**
  * Sets the rule set for the simulation
@@ -81,6 +160,7 @@ export const renderGrid = (grid) => {
     if (!grid.node) {
         grid.node = createElement('div', 'grid');
         document.getElementById('viewport').appendChild(grid.node);
+        setupGridDrawing(grid);
     }
 
     $('#cyclecount').textContent = grid.tickCounter;

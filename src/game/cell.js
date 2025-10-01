@@ -31,6 +31,30 @@ export const RULE_SETS = {
         birth: [2],
         survive: [],
     },
+    diamoeba: {
+        name: 'Diamoeba',
+        description: 'B35678/S5678 - Diamond-shaped crystalline forms',
+        birth: [3, 5, 6, 7, 8],
+        survive: [5, 6, 7, 8],
+    },
+    twobytwo: {
+        name: '2x2',
+        description: 'B36/S125 - Blocky 2x2 structures',
+        birth: [3, 6],
+        survive: [1, 2, 5],
+    },
+    maze: {
+        name: 'Maze',
+        description: 'B3/S12345 - Creates labyrinth corridors',
+        birth: [3],
+        survive: [1, 2, 3, 4, 5],
+    },
+    coral: {
+        name: 'Coral',
+        description: 'B3/S45678 - Organic coral-like growth',
+        birth: [3],
+        survive: [4, 5, 6, 7, 8],
+    },
 };
 
 // Current active rule set
@@ -110,16 +134,19 @@ export const toggleCell = (cell) => {
 };
 
 /**
- * Renders a cell to the DOM
+ * Sets cell to alive (for drawing)
+ */
+export const activateCell = (cell) => {
+    cell.alive = true;
+};
+
+/**
+ * Renders a cell to the DOM (no individual event listeners - handled at grid level)
  */
 export const renderCell = (cell, parent) => {
     if (!cell.node) {
         cell.node = document.createElement('div');
         cell.node.className = 'cell';
-        cell.node.addEventListener('click', () => {
-            toggleCell(cell);
-            renderCell(cell, parent);
-        });
         parent.appendChild(cell.node);
     }
     cell.node.className = cell.alive ? 'cell alive' : 'cell dead';
