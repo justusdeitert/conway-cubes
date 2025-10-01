@@ -218,7 +218,6 @@ export const startGrid = (grid) => {
     if (grid.ticking) return;
 
     grid.node.classList.add('ticking');
-    tickGrid(grid);
     initTimer(grid);
     grid.ticking = true;
 };
