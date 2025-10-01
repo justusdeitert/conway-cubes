@@ -3,6 +3,33 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="An interactive 3D visualization of Conway's Game of Life cellular automaton. Watch cells evolve through generations with various rule sets." />
+        <meta name="keywords" content="Conway's Game of Life, cellular automaton, 3D visualization, interactive simulation, game of life" />
+        <meta name="author" content="Conway Cubes" />
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Conway's Game Of Life - 3D" />
+        <meta property="og:description" content="An interactive 3D visualization of Conway's Game of Life cellular automaton." />
+        <meta property="og:image" content="/icon-512.png" />
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Conway's Game Of Life - 3D" />
+        <meta name="twitter:description" content="An interactive 3D visualization of Conway's Game of Life cellular automaton." />
+        <meta name="twitter:image" content="/icon-512.png" />
+        
+        <!-- Favicon & Icons -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <meta name="theme-color" content="#34d399" />
+        
+        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -16,7 +43,7 @@
         <header class="glass-panel absolute top-0 left-0 right-0 px-6 py-5 z-10">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-2 h-2 rounded-full bg-accent shadow-[0_0_10px_rgba(16,185,129,0.8)] animate-pulse"></div>
+                    <img src="/src/logo.svg" alt="Conway Cubes Logo" class="w-8 h-8" />
                     <h1 class="text-xl md:text-2xl font-bold tracking-wider text-text-primary m-0 uppercase">
                         Conway's Game Of Life
                     </h1>
