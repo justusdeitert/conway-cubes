@@ -166,7 +166,8 @@ export const renderGrid = (grid) => {
 
     grid.cells.forEach((cell) => renderCell(cell, grid.node));
 
-    const cellSize = grid.cells[0].node.offsetWidth + 2;
+    // Cell has margin: 2px on all sides, so total cell size = width + 4 (2px left + 2px right)
+    const cellSize = grid.cells[0].node.offsetWidth + 4;
     grid.node.style.width = `${cellSize * grid.size}px`;
     grid.node.style.height = `${cellSize * grid.size}px`;
     grid.node.parentNode.style.top = `${(window.innerHeight - cellSize * grid.size) / 2 - 50}px`;
