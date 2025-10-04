@@ -132,9 +132,9 @@ export const seedGrid = (grid) => {
 export const buildNeighborCache = (grid) => {
     const size = grid.size;
 
-    grid.cells.forEach((cell, i) => {
-        const row = Math.floor(i / size);
-        const col = i % size;
+    grid.cells.forEach((cell, index) => {
+        const row = Math.floor(index / size);
+        const col = index % size;
 
         // 8 neighbor directions: [rowOffset, colOffset]
         const directions = [
@@ -144,12 +144,12 @@ export const buildNeighborCache = (grid) => {
         ];
 
         cell.neighbors = directions
-            .map(([dr, dc]) => {
-                const nr = row + dr;
-                const nc = col + dc;
+            .map(([rowOffset, colOffset]) => {
+                const neighborRow = row + rowOffset;
+                const neighborCol = col + colOffset;
                 // Only include neighbors within grid boundaries
-                if (nr >= 0 && nr < size && nc >= 0 && nc < size) {
-                    return grid.cells[nr * size + nc];
+                if (neighborRow >= 0 && neighborRow < size && neighborCol >= 0 && neighborCol < size) {
+                    return grid.cells[neighborRow * size + neighborCol];
                 }
                 return null;
             })
