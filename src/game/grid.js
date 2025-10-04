@@ -127,7 +127,7 @@ export const seedGrid = (grid) => {
 };
 
 /**
- * Builds neighbor cache for all cells (wrapping at edges)
+ * Builds neighbor cache for all cells (bounded at edges)
  */
 export const buildNeighborCache = (grid) => {
     const size = grid.size;
@@ -143,12 +143,17 @@ export const buildNeighborCache = (grid) => {
             [1, -1],  [1, 0],  [1, 1],
         ];
 
-        cell.neighbors = directions.map(([dr, dc]) => {
-            // Wrap around edges (toroidal grid)
-            const nr = (row + dr + size) % size;
-            const nc = (col + dc + size) % size;
-            return grid.cells[nr * size + nc];
-        });
+        cell.neighbors = directions
+            .map(([dr, dc]) => {
+                const nr = row + dr;
+                const nc = col + dc;
+                // Only include neighbors within grid boundaries
+                if (nr >= 0 && nr < size && nc >= 0 && nc < size) {
+                    return grid.cells[nr * size + nc];
+                }
+                return null;
+            })
+            .filter(Boolean);
     });
 };
 
