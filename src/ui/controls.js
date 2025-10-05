@@ -132,22 +132,22 @@ const setupKeyboardShortcuts = (buttonKeycodes, callbacks) => {
 const bindActions = (callbacks) => {
     const buttonKeycodes = {};
 
-    $$('[data-action]').forEach((el) => {
-        const action = el.dataset.action;
-        const keycode = el.dataset.keycode;
+    $$('[data-action]').forEach((element) => {
+        const action = element.dataset.action;
+        const keycode = element.dataset.keycode;
 
         if (keycode) {
-            buttonKeycodes[keycode] = el;
+            buttonKeycodes[keycode] = element;
         }
 
-        const tagName = el.tagName.toLowerCase();
+        const tagName = element.tagName.toLowerCase();
 
         if (tagName === 'button') {
-            el.addEventListener('click', () => {
+            element.addEventListener('click', () => {
                 if (callbacks[action]) callbacks[action]();
             });
         } else if (tagName === 'input' || tagName === 'select') {
-            el.addEventListener('change', (event) => {
+            element.addEventListener('change', (event) => {
                 if (callbacks[action]) callbacks[action](event.target.value);
             });
         }

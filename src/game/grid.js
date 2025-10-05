@@ -21,30 +21,30 @@ let lastActivatedCell = null;
 /**
  * Gets cell at mouse position - tries exact hit first, then finds nearest cell
  */
-const getCellAtPosition = (grid, e) => {
+const getCellAtPosition = (grid, event) => {
     // First try: exact hit using elementsFromPoint (handles 3D transforms)
-    const elements = document.elementsFromPoint(e.clientX, e.clientY);
+    const elements = document.elementsFromPoint(event.clientX, event.clientY);
     
-    for (const el of elements) {
-        if (el.classList.contains('cell')) {
-            return grid.cells.find(cell => cell.node === el) || null;
+    for (const element of elements) {
+        if (element.classList.contains('cell')) {
+            return grid.cells.find(cell => cell.node === element) || null;
         }
     }
     
     // Second try: find nearest cell (for gaps)
     let nearestCell = null;
-    let nearestDist = Infinity;
+    let nearestDistance = Infinity;
     
     for (const cell of grid.cells) {
         if (!cell.node) continue;
         const rect = cell.node.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+        const distance = Math.hypot(event.clientX - centerX, event.clientY - centerY);
         
         // Only consider cells within reasonable distance (half cell size + gap)
-        if (dist < nearestDist && dist < rect.width) {
-            nearestDist = dist;
+        if (distance < nearestDistance && distance < rect.width) {
+            nearestDistance = distance;
             nearestCell = cell;
         }
     }
@@ -57,10 +57,10 @@ const getCellAtPosition = (grid, e) => {
  */
 const setupGridDrawing = (grid) => {
     // Mousedown: start drawing and activate cell
-    grid.node.addEventListener('mousedown', (e) => {
-        e.preventDefault();
+    grid.node.addEventListener('mousedown', (event) => {
+        event.preventDefault();
         isDrawing = true;
-        const cell = getCellAtPosition(grid, e);
+        const cell = getCellAtPosition(grid, event);
         if (cell) {
             toggleCell(cell);
             renderCell(cell, grid.node);
@@ -69,9 +69,9 @@ const setupGridDrawing = (grid) => {
     });
     
     // Mousemove: continue drawing while held
-    grid.node.addEventListener('mousemove', (e) => {
+    grid.node.addEventListener('mousemove', (event) => {
         if (!isDrawing) return;
-        const cell = getCellAtPosition(grid, e);
+        const cell = getCellAtPosition(grid, event);
         if (cell && cell !== lastActivatedCell) {
             activateCell(cell);
             renderCell(cell, grid.node);
