@@ -90,8 +90,6 @@ const createCallbacks = (grid) => ({
 
     ruleset: (value) => {
         setGridRule(grid, value);
-        initGrid(grid);
-        setState('stopped');
     },
 });
 
