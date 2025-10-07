@@ -259,11 +259,58 @@ export const setGridDelay = (grid, delay) => {
 };
 
 /**
- * Sets grid size and reinitializes
+ * Sets grid size while preserving existing cells (centered)
  */
 export const setGridSize = (grid, size) => {
+    const oldSize = grid.size;
+    const oldCells = grid.cells;
+    const wasTicking = grid.ticking;
+
+    // Temporarily stop if running
+    if (wasTicking) {
+        clearInterval(grid.tickTimer);
+    }
+
+    // Remove old cell nodes
+    grid.cells.forEach(unrenderCell);
+
+    // Update size
     grid.size = size;
-    initGrid(grid);
+
+    // Calculate offset to keep content centered
+    // Positive offset = old grid content shifts right/down in new grid
+    // Negative offset = old grid content shifts left/up (gets cropped from edges)
+    const offset = Math.floor((size - oldSize) / 2);
+
+    // Create new cells array, preserving state from old cells (centered)
+    grid.cells = [];
+    for (let x = 0; x < size; x++) {
+        for (let y = 0; y < size; y++) {
+            let alive = false;
+            // Map new position back to old grid position (centered)
+            const oldX = x - offset;
+            const oldY = y - offset;
+            
+            // Check if this position existed in old grid
+            if (oldX >= 0 && oldX < oldSize && oldY >= 0 && oldY < oldSize) {
+                const oldIndex = oldX * oldSize + oldY;
+                alive = oldCells[oldIndex]?.alive || false;
+            } else {
+                // New cells get random state based on density
+                alive = Math.random() < grid.density;
+            }
+            grid.cells.push(createCell(x, y, alive));
+        }
+    }
+
+    // Rebuild neighbor cache and render
+    buildNeighborCache(grid);
+    renderGrid(grid);
+
+    // Resume if was running
+    if (wasTicking) {
+        grid.tickTimer = setInterval(() => tickGrid(grid), grid.delay);
+    }
 };
 
 /**

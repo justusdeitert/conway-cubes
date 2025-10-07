@@ -38,7 +38,7 @@ const setState = (state) => {
         controls.step.disabled = false;
         controls.stop.disabled = true;
     } else if (state === 'running') {
-        controls.gridsize.disabled = true;
+        controls.gridsize.disabled = false;
         controls.density.disabled = true;
         controls.freq.disabled = false;
         controls.start.disabled = false;
