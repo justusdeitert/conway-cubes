@@ -65,7 +65,6 @@ export const createCell = (x, y, alive = false) => ({
     alive,
     willDie: false,
     neighbors: [],
-    node: null,
 });
 
 /**
@@ -120,25 +119,4 @@ export const toggleCell = (cell) => {
  */
 export const activateCell = (cell) => {
     cell.alive = true;
-};
-
-/**
- * Renders a cell to the DOM (no individual event listeners - handled at grid level)
- */
-export const renderCell = (cell, parent) => {
-    if (!cell.node) {
-        cell.node = document.createElement('div');
-        cell.node.className = 'cell';
-        parent.appendChild(cell.node);
-    }
-    cell.node.className = cell.alive ? 'cell alive' : 'cell dead';
-};
-
-/**
- * Removes cell from DOM
- */
-export const unrenderCell = (cell) => {
-    if (cell.node && cell.node.parentNode) {
-        cell.node.parentNode.removeChild(cell.node);
-    }
 };
