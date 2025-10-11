@@ -19,12 +19,6 @@ export const RULE_SETS = {
         birth: [3, 6],
         survive: [2, 3],
     },
-    twobytwo: {
-        name: '2x2',
-        description: 'B36/S125 - Blocky 2x2 structures',
-        birth: [3, 6],
-        survive: [1, 2, 5],
-    },
     maze: {
         name: 'Maze',
         description: 'B3/S12345 - Creates labyrinth corridors',
