@@ -9,12 +9,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // Constants
 const CELL_SIZE = 1;
 const CELL_GAP = 0.15;
-const CELL_HEIGHT_ALIVE = 0.6;
+const CELL_HEIGHT_ALIVE = 0.25;
 const CELL_HEIGHT_DEAD = 0.1;
+const CELL_FLOAT_OFFSET = 0.35; // How high alive cells float above the grid
 
 // Colors
-const ACCENT_COLOR = new THREE.Color(0x34d399);
-const ACCENT_BRIGHT = new THREE.Color(0x6ee7b7);
+const ACCENT_COLOR = new THREE.Color(0x10b981);
+const ACCENT_BRIGHT = new THREE.Color(0x10b981);
 const DEAD_COLOR = new THREE.Color(0x4a4a4f);
 const BACKGROUND_COLOR = new THREE.Color(0x0a0a0b);
 
@@ -36,6 +37,8 @@ const tempColor = new THREE.Color();
 let targetHeights = [];
 let currentHeights = [];
 let targetColors = [];
+let targetFloats = [];
+let currentFloats = [];
 
 /**
  * Initialize the Three.js scene
@@ -89,11 +92,11 @@ export const initRenderer = (container) => {
  */
 const setupLighting = () => {
     // Ambient light for base illumination
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
     scene.add(ambientLight);
 
     // Main directional light with shadows
-    const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.8);
     mainLight.position.set(10, 20, 10);
     mainLight.castShadow = true;
     mainLight.shadow.mapSize.width = 2048;
@@ -107,12 +110,12 @@ const setupLighting = () => {
     scene.add(mainLight);
 
     // Accent colored point light for glow effect
-    const accentLight = new THREE.PointLight(ACCENT_COLOR, 2, 50);
+    const accentLight = new THREE.PointLight(ACCENT_COLOR, 2, 60);
     accentLight.position.set(0, 10, 0);
     scene.add(accentLight);
 
     // Secondary fill light
-    const fillLight = new THREE.DirectionalLight(0x4488ff, 0.3);
+    const fillLight = new THREE.DirectionalLight(0x4488ff, 0.6);
     fillLight.position.set(-10, 10, -10);
     scene.add(fillLight);
 };
@@ -131,10 +134,12 @@ export const createGridMesh = (size) => {
     gridSize = size;
     const totalCells = size * size;
 
-    // Initialize height arrays
+    // Initialize height and float arrays
     targetHeights = new Array(totalCells).fill(CELL_HEIGHT_DEAD);
     currentHeights = new Array(totalCells).fill(CELL_HEIGHT_DEAD);
     targetColors = new Array(totalCells).fill(false);
+    targetFloats = new Array(totalCells).fill(0);
+    currentFloats = new Array(totalCells).fill(0);
 
     // Geometry - rounded box effect using beveled edges
     const geometry = new THREE.BoxGeometry(
@@ -147,10 +152,10 @@ export const createGridMesh = (size) => {
     // Material with emissive for glow effect
     const material = new THREE.MeshStandardMaterial({
         color: DEAD_COLOR,
-        metalness: 0.3,
-        roughness: 0.7,
+        metalness: 0.2,
+        roughness: 0.5,
         emissive: new THREE.Color(0x000000),
-        emissiveIntensity: 0.5,
+        emissiveIntensity: 0,
     });
 
     // Create instanced mesh
@@ -189,6 +194,7 @@ export const updateCells = (cells) => {
     cells.forEach((cell, index) => {
         targetHeights[index] = cell.alive ? CELL_HEIGHT_ALIVE : CELL_HEIGHT_DEAD;
         targetColors[index] = cell.alive;
+        targetFloats[index] = cell.alive ? CELL_FLOAT_OFFSET : 0;
     });
 };
 
@@ -204,28 +210,33 @@ const animateCells = () => {
     for (let i = 0; i < gridSize * gridSize; i++) {
         const targetHeight = targetHeights[i];
         const currentHeight = currentHeights[i];
+        const targetFloat = targetFloats[i];
+        const currentFloat = currentFloats[i];
 
-        // Smooth interpolation
+        // Smooth interpolation for height and float
         const newHeight = currentHeight + (targetHeight - currentHeight) * 0.15;
+        const newFloat = currentFloat + (targetFloat - currentFloat) * 0.12;
 
-        if (Math.abs(newHeight - currentHeight) > 0.001) {
+        if (Math.abs(newHeight - currentHeight) > 0.001 || Math.abs(newFloat - currentFloat) > 0.001) {
             currentHeights[i] = newHeight;
+            currentFloats[i] = newFloat;
             needsUpdate = true;
 
             const x = (i % gridSize) * CELL_SIZE - offset;
             const z = Math.floor(i / gridSize) * CELL_SIZE - offset;
 
-            tempPosition.set(x, newHeight / 2, z);
+            // Position includes float offset - cells float above the grid
+            tempPosition.set(x, newHeight / 2 + newFloat, z);
             tempQuaternion.identity();
             tempScale.set(1, newHeight, 1);
 
             tempMatrix.compose(tempPosition, tempQuaternion, tempScale);
             instancedMesh.setMatrixAt(i, tempMatrix);
 
-            // Color interpolation
+            // Color interpolation - use brighter color for alive cells
             const isAlive = targetColors[i];
             const colorLerp = (newHeight - CELL_HEIGHT_DEAD) / (CELL_HEIGHT_ALIVE - CELL_HEIGHT_DEAD);
-            tempColor.lerpColors(DEAD_COLOR, isAlive ? ACCENT_COLOR : DEAD_COLOR, colorLerp);
+            tempColor.lerpColors(DEAD_COLOR, isAlive ? ACCENT_BRIGHT : DEAD_COLOR, colorLerp);
             instancedMesh.setColorAt(i, tempColor);
         }
     }
