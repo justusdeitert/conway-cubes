@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 // Constants
 const CELL_SIZE = 1;
@@ -141,12 +142,13 @@ export const createGridMesh = (size) => {
     targetFloats = new Array(totalCells).fill(0);
     currentFloats = new Array(totalCells).fill(0);
 
-    // Geometry - rounded box effect using beveled edges
-    const geometry = new THREE.BoxGeometry(
+    // Geometry - rounded box with smooth edges
+    const geometry = new RoundedBoxGeometry(
         CELL_SIZE - CELL_GAP,
         1, // Height will be scaled per instance
         CELL_SIZE - CELL_GAP,
-        1, 1, 1
+        2, // segments (low for performance)
+        0.08 // radius for rounded corners
     );
 
     // Material with emissive for glow effect

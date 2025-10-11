@@ -78,7 +78,7 @@ export const setGridRule = (grid, ruleKey) => {
 /**
  * Creates a grid state object
  */
-export const createGrid = (size = 20, density = 0.1, delay = 500) => ({
+export const createGrid = (size = 32, density = 0.1, delay = 500) => ({
     size,
     density,
     delay,
