@@ -1,92 +1,69 @@
 /**
  * Grid - functional approach for Game of Life grid
+ * Now using Three.js for rendering
  */
 
-import { $, createElement } from '../utils/dom.js';
+import { $ } from '../utils/dom.js';
 import {
     createCell,
     evolveCell,
     tickCell,
-    renderCell,
-    unrenderCell,
     setRule,
     toggleCell,
     activateCell,
 } from './cell.js';
+import {
+    initRenderer,
+    createGridMesh,
+    updateCells,
+    getCellAtPosition as getRendererCellAtPosition,
+    disableControls,
+    enableControls,
+} from './renderer.js';
 
 // Drawing state
 let isDrawing = false;
 let lastActivatedCell = null;
-
-/**
- * Gets cell at mouse position - tries exact hit first, then finds nearest cell
- */
-const getCellAtPosition = (grid, event) => {
-    // First try: exact hit using elementsFromPoint (handles 3D transforms)
-    const elements = document.elementsFromPoint(event.clientX, event.clientY);
-    
-    for (const element of elements) {
-        if (element.classList.contains('cell')) {
-            return grid.cells.find(cell => cell.node === element) || null;
-        }
-    }
-    
-    // Second try: find nearest cell (for gaps)
-    let nearestCell = null;
-    let nearestDistance = Infinity;
-    
-    for (const cell of grid.cells) {
-        if (!cell.node) continue;
-        const rect = cell.node.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const distance = Math.hypot(event.clientX - centerX, event.clientY - centerY);
-        
-        // Only consider cells within reasonable distance (half cell size + gap)
-        if (distance < nearestDistance && distance < rect.width) {
-            nearestDistance = distance;
-            nearestCell = cell;
-        }
-    }
-    
-    return nearestCell;
-};
+let rendererInitialized = false;
 
 /**
  * Sets up grid-level mouse event handlers for drawing
  */
-const setupGridDrawing = (grid) => {
+const setupGridDrawing = (grid, container) => {
     // Mousedown: start drawing and activate cell
-    grid.node.addEventListener('mousedown', (event) => {
-        event.preventDefault();
-        isDrawing = true;
-        const cell = getCellAtPosition(grid, event);
+    container.addEventListener('mousedown', (event) => {
+        // Don't interfere with orbit controls
+        if (event.button !== 0) return;
+
+        const cell = getRendererCellAtPosition(event, grid.cells);
         if (cell) {
+            event.preventDefault();
+            event.stopPropagation();
+            disableControls(); // Disable orbit controls while drawing
+            isDrawing = true;
             toggleCell(cell);
-            renderCell(cell, grid.node);
+            updateCells(grid.cells);
             lastActivatedCell = cell;
         }
     });
-    
+
     // Mousemove: continue drawing while held
-    grid.node.addEventListener('mousemove', (event) => {
+    container.addEventListener('mousemove', (event) => {
         if (!isDrawing) return;
-        const cell = getCellAtPosition(grid, event);
+        const cell = getRendererCellAtPosition(event, grid.cells);
         if (cell && cell !== lastActivatedCell) {
             activateCell(cell);
-            renderCell(cell, grid.node);
+            updateCells(grid.cells);
             lastActivatedCell = cell;
         }
     });
-    
+
     // Mouseup: stop drawing
     window.addEventListener('mouseup', () => {
+        if (isDrawing) {
+            enableControls(); // Re-enable orbit controls after drawing
+        }
         isDrawing = false;
-        lastActivatedCell = null;
-    });
-    
-    // Mouseleave: stop drawing when leaving grid
-    grid.node.addEventListener('mouseleave', () => {
         lastActivatedCell = null;
     });
 };
@@ -110,7 +87,6 @@ export const createGrid = (size = 20, density = 0.1, delay = 500) => ({
     tickTimer: null,
     ticking: false,
     delayChanged: false,
-    node: null,
 });
 
 /**
@@ -158,24 +134,11 @@ export const buildNeighborCache = (grid) => {
 };
 
 /**
- * Renders the grid to the DOM
+ * Renders the grid using Three.js
  */
 export const renderGrid = (grid) => {
-    if (!grid.node) {
-        grid.node = createElement('div', 'grid');
-        document.getElementById('viewport').appendChild(grid.node);
-        setupGridDrawing(grid);
-    }
-
     $('#cyclecount').textContent = grid.tickCounter;
-
-    grid.cells.forEach((cell) => renderCell(cell, grid.node));
-
-    // Cell has margin: 2px on all sides, so total cell size = width + 4 (2px left + 2px right)
-    const cellSize = grid.cells[0].node.offsetWidth + 4;
-    grid.node.style.width = `${cellSize * grid.size}px`;
-    grid.node.style.height = `${cellSize * grid.size}px`;
-    grid.node.parentNode.style.top = `${(window.innerHeight - cellSize * grid.size) / 2 - 50}px`;
+    updateCells(grid.cells);
 };
 
 /**
@@ -198,11 +161,21 @@ export const tickGrid = (grid) => {
 export const initGrid = (grid) => {
     clearInterval(grid.tickTimer);
 
-    grid.cells.forEach(unrenderCell);
     grid.cells = [];
     grid.tickCounter = 0;
     grid.tickTimer = null;
     grid.ticking = false;
+
+    // Initialize Three.js renderer if not done
+    if (!rendererInitialized) {
+        const viewport = document.getElementById('viewport');
+        initRenderer(viewport);
+        setupGridDrawing(grid, viewport);
+        rendererInitialized = true;
+    }
+
+    // Create/update the grid mesh
+    createGridMesh(grid.size);
 
     seedGrid(grid);
     buildNeighborCache(grid);
@@ -223,7 +196,6 @@ const initTimer = (grid) => {
 export const startGrid = (grid) => {
     if (grid.ticking) return;
 
-    grid.node.classList.add('ticking');
     initTimer(grid);
     grid.ticking = true;
 };
@@ -232,7 +204,6 @@ export const startGrid = (grid) => {
  * Stops/pauses the simulation
  */
 export const stopGrid = (grid) => {
-    grid.node.classList.remove('ticking');
     clearInterval(grid.tickTimer);
     grid.ticking = false;
 };
@@ -271,15 +242,10 @@ export const setGridSize = (grid, size) => {
         clearInterval(grid.tickTimer);
     }
 
-    // Remove old cell nodes
-    grid.cells.forEach(unrenderCell);
-
     // Update size
     grid.size = size;
 
     // Calculate offset to keep content centered
-    // Positive offset = old grid content shifts right/down in new grid
-    // Negative offset = old grid content shifts left/up (gets cropped from edges)
     const offset = Math.floor((size - oldSize) / 2);
 
     // Create new cells array, preserving state from old cells (centered)
@@ -290,7 +256,7 @@ export const setGridSize = (grid, size) => {
             // Map new position back to old grid position (centered)
             const oldX = x - offset;
             const oldY = y - offset;
-            
+
             // Check if this position existed in old grid
             if (oldX >= 0 && oldX < oldSize && oldY >= 0 && oldY < oldSize) {
                 const oldIndex = oldX * oldSize + oldY;
@@ -302,6 +268,9 @@ export const setGridSize = (grid, size) => {
             grid.cells.push(createCell(x, y, alive));
         }
     }
+
+    // Update Three.js mesh
+    createGridMesh(size);
 
     // Rebuild neighbor cache and render
     buildNeighborCache(grid);

@@ -598,15 +598,7 @@
     "@unocss/core" "66.5.12"
     "@unocss/preset-wind3" "66.5.12"
 
-"@unocss/preset-web-fonts@66.5.12":
-  version "66.5.12"
-  resolved "https://registry.npmjs.org/@unocss/preset-web-fonts/-/preset-web-fonts-66.5.12.tgz"
-  integrity sha512-NSUf+H5X0jZ1PLWW6D5ldBERERpbH8VvkpJJhxNTCS54Lj5vJiZ1S06UYxBB57vuUOaHpQOGTbKUSc204LCqdw==
-  dependencies:
-    "@unocss/core" "66.5.12"
-    ofetch "^1.5.1"
-
-"@unocss/preset-web-fonts@^66.5.12":
+"@unocss/preset-web-fonts@66.5.12", "@unocss/preset-web-fonts@^66.5.12":
   version "66.5.12"
   resolved "https://registry.yarnpkg.com/@unocss/preset-web-fonts/-/preset-web-fonts-66.5.12.tgz#b4b701f20828513662ebf21a27df0a80e87e15a8"
   integrity sha512-NSUf+H5X0jZ1PLWW6D5ldBERERpbH8VvkpJJhxNTCS54Lj5vJiZ1S06UYxBB57vuUOaHpQOGTbKUSc204LCqdw==
@@ -1066,6 +1058,11 @@ sirv@^3.0.2:
   version "1.2.1"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz"
   integrity sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==
+
+three@^0.182.0:
+  version "0.182.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.182.0.tgz#535b71b4335529d0eacdb1d30eba72bada3d0b54"
+  integrity sha512-GbHabT+Irv+ihI1/f5kIIsZ+Ef9Sl5A1Y7imvS5RQjWgtTPfPnZ43JmlYI7NtCRDK9zir20lQpfg8/9Yd02OvQ==
 
 tinyexec@^1.0.1:
   version "1.0.2"

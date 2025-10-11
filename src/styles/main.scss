@@ -18,67 +18,21 @@ $surface-elevated: #18181b;
 $border: #27272a;
 
 // --------------------------------------------
-// Animations
-// --------------------------------------------
-@keyframes spin {
-    from {
-        transform: rotateX(55deg) rotateZ(0deg);
-    }
-    to {
-        transform: rotateX(55deg) rotateZ(360deg);
-    }
-}
-
-// Removed pulse-glow animation for performance
-
-// --------------------------------------------
 // Dynamic glow text
 // --------------------------------------------
 .dynamic {
     color: $accent;
-    // text-shadow removed for performance
+    text-shadow: 0 0 20px $accent-glow;
 }
 
 // --------------------------------------------
-// Grid & Cells (3D transform styles)
+// Three.js Canvas
 // --------------------------------------------
-.grid {
-    position: relative;
-    z-index: 2;
-    margin: 0 auto;
-    transform-style: preserve-3d;
-    transform: rotateX(55deg);
-    animation: spin 40s linear infinite;
-    // GPU acceleration hint
-    will-change: transform;
-    backface-visibility: hidden;
-}
-
-.cell {
-    float: left;
-    width: $cell-size;
-    height: $cell-size;
-    margin: $cell-gap;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 3px;
-    // Use will-change for GPU acceleration and only transition specific properties
-    will-change: transform, background-color, border-color;
-    transition: transform 0.15s ease-out, background-color 0.15s ease-out, border-color 0.15s ease-out;
-
-    &.alive {
-        background: $accent;
-        border-color: $accent-bright;
-        // Simplified: single subtle shadow instead of multiple glows
-        box-shadow: 0 0 8px $accent-glow;
-        transform: translateZ(20px);
-        // Removed pulse-glow animation for performance
-    }
-
-    &.dead:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.1);
-        transform: translateZ(5px);
+#viewport {
+    canvas {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
     }
 }
 
