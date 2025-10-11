@@ -68,13 +68,13 @@
         <div id="viewport" class="absolute inset-0 z-0"></div>
 
         <!-- Cycle Counter -->
-        <div id="cyclecount" class="dynamic absolute bottom-[160px] left-0 right-0 z-100 text-5xl md:text-6xl text-center font-bold tracking-widest"></div>
+        <div id="cyclecount" class="dynamic absolute bottom-[140px] left-1/2 -translate-x-1/2 z-100 text-2xl md:text-3xl font-bold tracking-widest"></div>
 
         <!-- Controls Panel -->
-        <footer id="controls" class="absolute bottom-0 left-0 right-0 px-6 py-5 z-10">
+        <footer id="controls" class="absolute bottom-0 left-6 right-6 py-5 z-10 pointer-events-none">
             <div class="flex items-end justify-between">
                 <!-- Parameters - Stacked on Left -->
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2 pointer-events-auto">
                     <div class="slider-pill" title="Grid Size">
                         <span class="i-ph-grid-four-fill text-base text-text-muted"></span>
                         <input
@@ -83,7 +83,7 @@
                             type="range"
                             value="20"
                             min="8"
-                            max="28"
+                            max="64"
                             step="4"
                             data-action="gridsize"
                         />
@@ -122,7 +122,7 @@
                 </div>
 
                 <!-- Action Buttons - Modern Floating Pill -->
-                <div class="action-pill">
+                <div class="action-pill pointer-events-auto">
                     <button
                         id="btn-start"
                         class="action-btn action-btn-primary two-state"

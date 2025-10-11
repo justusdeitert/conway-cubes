@@ -92,11 +92,11 @@ export const initRenderer = (container) => {
  */
 const setupLighting = () => {
     // Ambient light for base illumination
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
     scene.add(ambientLight);
 
     // Main directional light with shadows
-    const mainLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
     mainLight.position.set(10, 20, 10);
     mainLight.castShadow = true;
     mainLight.shadow.mapSize.width = 2048;
@@ -152,8 +152,8 @@ export const createGridMesh = (size) => {
     // Material with emissive for glow effect
     const material = new THREE.MeshStandardMaterial({
         color: DEAD_COLOR,
-        metalness: 0.2,
-        roughness: 0.5,
+        metalness: 0.1,
+        roughness: 0.7,
         emissive: new THREE.Color(0x000000),
         emissiveIntensity: 0,
     });
