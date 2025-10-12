@@ -7,7 +7,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "start": "serve -s dist -l 80"
     },
     "devDependencies": {
         "@unocss/preset-icons": "^66.5.12",
@@ -15,6 +16,7 @@
         "@unocss/preset-web-fonts": "^66.5.12",
         "prettier": "^3.7.4",
         "sass": "^1.97.1",
+        "serve": "^14.2.6",
         "unocss": "^66.5.12",
         "vite": "^7.3.0"
     },
@@ -22,6 +24,6 @@
         "three": "^0.182.0"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=20"
     }
 }
