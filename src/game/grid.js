@@ -20,6 +20,7 @@ import {
     disableControls,
     enableControls,
 } from './renderer.js';
+import { getPatternCells, getPatternCellsWithDensity, getMinGridSize } from './patterns.js';
 
 // Drawing state
 let isDrawing = false;
@@ -87,16 +88,35 @@ export const createGrid = (size = 32, density = 0.1, delay = 500) => ({
     tickTimer: null,
     ticking: false,
     delayChanged: false,
+    currentPattern: 'random',
 });
 
 /**
  * Seeds the grid with cells
+ * @param {Object} grid - The grid object
+ * @param {string} pattern - Pattern key ('random', 'glider', etc.)
  */
-export const seedGrid = (grid) => {
+export const seedGrid = (grid, pattern = 'random') => {
     grid.cells = [];
+    
+    // Use density-based placement for patterns
+    const patternCells = getPatternCellsWithDensity(pattern, grid.size, grid.density);
+    const patternSet = patternCells 
+        ? new Set(patternCells.map(({ x, y }) => `${x},${y}`))
+        : null;
+    
     for (let x = 0; x < grid.size; x++) {
         for (let y = 0; y < grid.size; y++) {
-            const alive = Math.random() < grid.density;
+            let alive = false;
+            
+            if (patternSet) {
+                // Use pattern cells
+                alive = patternSet.has(`${x},${y}`);
+            } else {
+                // Random mode
+                alive = Math.random() < grid.density;
+            }
+            
             grid.cells.push(createCell(x, y, alive));
         }
     }
@@ -157,14 +177,17 @@ export const tickGrid = (grid) => {
 
 /**
  * Initializes/resets the grid
+ * @param {Object} grid - The grid object
+ * @param {string} pattern - Pattern key ('random', 'glider', etc.)
  */
-export const initGrid = (grid) => {
+export const initGrid = (grid, pattern = 'random') => {
     clearInterval(grid.tickTimer);
 
     grid.cells = [];
     grid.tickCounter = 0;
     grid.tickTimer = null;
     grid.ticking = false;
+    grid.currentPattern = pattern;
 
     // Initialize Three.js renderer if not done
     if (!rendererInitialized) {
@@ -177,7 +200,7 @@ export const initGrid = (grid) => {
     // Create/update the grid mesh
     createGridMesh(grid.size);
 
-    seedGrid(grid);
+    seedGrid(grid, pattern);
     buildNeighborCache(grid);
     renderGrid(grid);
 };
@@ -287,5 +310,17 @@ export const setGridSize = (grid, size) => {
  */
 export const setGridDensity = (grid, density) => {
     grid.density = density;
-    initGrid(grid);
+    initGrid(grid, grid.currentPattern || 'random');
+};
+
+/**
+ * Sets the pattern and reinitializes the grid
+ */
+export const setGridPattern = (grid, pattern) => {
+    // Auto-adjust grid size for large patterns
+    const minSize = getMinGridSize(pattern);
+    if (grid.size < minSize) {
+        grid.size = minSize;
+    }
+    initGrid(grid, pattern);
 };

@@ -48,19 +48,37 @@
                         Conway's Game Of Life
                     </h1>
                 </div>
-                <div class="flex items-center gap-3">
-                    <label for="param-ruleset" class="text-xs text-text-muted uppercase tracking-wider hidden md:block">Rules</label>
-                    <select
-                        id="param-ruleset"
-                        class="bg-[#1a1a1d] border border-[#2a2a2d] rounded-lg px-3 py-2 text-sm text-text-primary cursor-pointer hover:border-accent/50 focus:border-accent focus:outline-none transition-colors"
-                        data-action="ruleset"
-                    >
-                        <option value="conway">Conway's Life (B3/S23)</option>
-                        <option value="highlife">HighLife (B36/S23)</option>
-                        <option value="maze">Maze (B3/S12345)</option>
-                        <option value="serviettes">Serviettes (B234/S)</option>
-                        <option value="replicator">Replicator (B1357/S1357)</option>
-                    </select>
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-3">
+                        <label for="param-ruleset" class="text-xs text-text-muted uppercase tracking-wider hidden md:block w-20 text-right">Rules</label>
+                        <select
+                            id="param-ruleset"
+                            class="bg-[#1a1a1d] border border-[#2a2a2d] rounded-lg px-3 py-2 text-sm text-text-primary cursor-pointer hover:border-accent/50 focus:border-accent focus:outline-none transition-colors"
+                            data-action="ruleset"
+                        >
+                            <option value="conway">Conway's Life (B3/S23)</option>
+                            <option value="highlife">HighLife (B36/S23)</option>
+                            <option value="maze">Maze (B3/S12345)</option>
+                            <option value="serviettes">Serviettes (B234/S)</option>
+                            <option value="replicator">Replicator (B1357/S1357)</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label for="param-pattern" class="text-xs text-text-muted uppercase tracking-wider hidden md:block w-20 text-right">Pattern</label>
+                        <select
+                            id="param-pattern"
+                            class="bg-[#1a1a1d] border border-[#2a2a2d] rounded-lg px-3 py-2 text-sm text-text-primary cursor-pointer hover:border-accent/50 focus:border-accent focus:outline-none transition-colors"
+                            data-action="pattern"
+                        >
+                            <option value="random">Random</option>
+                            <option value="glider">Glider</option>
+                            <option value="blinker">Blinker</option>
+                            <option value="pulsar">Pulsar</option>
+                            <option value="glidergun">Glider Gun</option>
+                            <option value="spaceship">Spaceship (LWSS)</option>
+                            <option value="clear">Clear / Empty</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </header>
@@ -74,7 +92,19 @@
         <footer id="controls" class="absolute bottom-0 left-6 right-6 py-5 z-10 pointer-events-none">
             <div class="flex items-end justify-between">
                 <!-- Parameters - Stacked on Left -->
-                <div class="flex flex-col gap-2 pointer-events-auto">
+                <div class="flex flex-col gap-2 pointer-events-auto items-start">
+                    <button
+                        id="btn-rotate"
+                        class="action-pill h-10 px-4 cursor-pointer two-state gap-2"
+                        data-action="rotate"
+                        title="Toggle Auto-Rotation (R)"
+                        data-keycode="82"
+                    >
+                        <span class="pause i-ph-cube-fill text-base text-accent"></span>
+                        <span class="play i-ph-cube text-base text-text-muted"></span>
+                        <span class="text-sm text-text-primary font-medium">Rotation</span>
+                    </button>
+
                     <div class="slider-pill" title="Grid Size">
                         <span class="i-ph-grid-four-fill text-base text-text-muted"></span>
                         <input

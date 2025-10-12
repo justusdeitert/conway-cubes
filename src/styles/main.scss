@@ -150,6 +150,32 @@ button.down:not([disabled]) {
 }
 
 // --------------------------------------------
+// Rotation Toggle Button States
+// --------------------------------------------
+#btn-rotate {
+    border: none;
+    
+    .pause,
+    .play {
+        display: none;
+    }
+
+    // Default: rotation is ON, show filled cube (pause icon means "click to pause")
+    .pause {
+        display: flex;
+    }
+
+    // When rotation is paused, show outline cube (play icon means "click to resume")
+    &.rotation-paused .pause {
+        display: none;
+    }
+
+    &.rotation-paused .play {
+        display: flex;
+    }
+}
+
+// --------------------------------------------
 // Tooltip on hover for action buttons
 // --------------------------------------------
 .action-btn {

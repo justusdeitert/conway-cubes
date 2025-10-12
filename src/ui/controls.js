@@ -11,7 +11,9 @@ import {
     setGridDensity,
     setGridDelay,
     setGridRule,
+    setGridPattern,
 } from '../game/grid.js';
+import { toggleAutoRotate } from '../game/renderer.js';
 
 /**
  * UI state and element references
@@ -66,7 +68,7 @@ const createCallbacks = (grid) => ({
     },
 
     stop: () => {
-        initGrid(grid);
+        initGrid(grid, grid.currentPattern || 'random');
         setState('stopped');
     },
 
@@ -90,6 +92,28 @@ const createCallbacks = (grid) => ({
 
     ruleset: (value) => {
         setGridRule(grid, value);
+    },
+
+    rotate: () => {
+        const isRotating = toggleAutoRotate();
+        const btn = $('#btn-rotate');
+        if (isRotating) {
+            btn.classList.remove('rotation-paused');
+        } else {
+            btn.classList.add('rotation-paused');
+        }
+    },
+
+    pattern: (value) => {
+        setGridPattern(grid, value);
+        // Update grid size slider if pattern requires larger grid
+        const gridSizeInput = $('#param-gridsize');
+        if (parseInt(gridSizeInput.value, 10) < grid.size) {
+            gridSizeInput.value = grid.size;
+            const meter = gridSizeInput.parentNode.querySelector('.slider-value');
+            meter.textContent = `${grid.size}×${grid.size}`;
+        }
+        setState('stopped');
     },
 });
 

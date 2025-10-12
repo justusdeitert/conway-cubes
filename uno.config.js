@@ -21,7 +21,7 @@ export default defineConfig({
             'dark-surface': '#111113',
             'dark-elevated': '#18181b',
             'dark-border': '#27272a',
-            'dark-overlay': 'rgba(10, 10, 11, 0.85)',
+            'dark-overlay': 'rgba(10, 10, 11, 0.5)',
             // Accent - emerald/cyber green
             accent: '#10b981',
             'accent-bright': '#34d399',
