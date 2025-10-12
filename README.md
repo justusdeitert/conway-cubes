@@ -2,7 +2,7 @@
 
 A 3D implementation of Conway's Game of Life — built with Three.js.
 
-🚀 Preview: [conway-cubes.netlify.app](https://conway-cubes.netlify.app)
+🚀 Preview: [conway-cubes.justusdeitert.de](https://conway-cubes.justsudeitert.de)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/c64ad8d0-d192-42ed-959c-dcb43b587660/deploy-status)](https://app.netlify.com/projects/conway-cubes/deploys)
